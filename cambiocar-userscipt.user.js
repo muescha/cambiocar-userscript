@@ -10,29 +10,29 @@
 // ==/UserScript==
 
 
-function displayPopup(cell,url){
+function displayPopup(cell, url) {
     var form = document.createElement('FORM');
-    form.name='myForm';
-    form.method='POST';
-    form.action=url;
-    form.target='print_popup';
+    form.name = 'myForm';
+    form.method = 'POST';
+    form.action = url;
+    form.target = 'print_popup';
     var btn = document.createElement("button");
 
     btn.innerHTML = 'Preis in Popup anzeigen';
-    btn.onclick = async function(){
-        var win = window.open('about:blank','print_popup','width=1000,height=800');
+    btn.onclick = async function () {
+        var win = window.open('about:blank', 'print_popup', 'width=1000,height=800');
     }
     form.appendChild(btn);
     cell.appendChild(form);
 }
 
-function displayInline(cell,url){
+function displayInline(cell, url) {
     var btn = document.createElement("button");
     btn.innerHTML = 'Preis berechnen';
     btn.type = 'button'
-    btn.onclick = async function(){
+    btn.onclick = async function () {
 
-        var res = await fetch(url, { method: "POST"})
+        var res = await fetch(url, {method: "POST"})
         console.log(res)
         var resText = await res.text();
         //console.log(resText)
@@ -43,7 +43,7 @@ function displayInline(cell,url){
         var priceItemsRaw = doc.querySelectorAll(".kosten")
         console.log(priceItemsRaw)
         var priceItems = Array.from(priceItemsRaw).map(
-                i => i.innerText.replace(/\t/g,'').replace(/\n/g,'').trim()+'€')
+            i => i.innerText.replace(/\t/g, '').replace(/\n/g, '').trim() + '€')
         var info = "Schätzung: " + priceItems[0] + " + " + priceItems[1] + " = " + priceItems[2]
         var infoDisclaimer = "(nicht beachtet wurden zb eine frühzeitige Rückgabe)"
 
@@ -55,9 +55,9 @@ function displayInline(cell,url){
         var viewTable = document.createElement("button");
         viewTable.innerHTML = 'Preis Details anzeigen';
         viewTable.type = 'button'
-        viewTable.onclick = async function(){
-            viewTable.innerHTML = priceTable.style.display=='none'?'Preis Details ausblenden':'Preis Details anzeigen'
-            priceTable.style.display = priceTable.style.display=='none'?'block':'none'
+        viewTable.onclick = async function () {
+            viewTable.innerHTML = priceTable.style.display == 'none' ? 'Preis Details ausblenden' : 'Preis Details anzeigen'
+            priceTable.style.display = priceTable.style.display == 'none' ? 'block' : 'none'
         }
         cell.appendChild(viewTable)
         cell.appendChild(document.createElement("br"))
@@ -78,7 +78,7 @@ function displayInline(cell,url){
 }
 
 
-(function() {
+(function () {
     'use strict';
 
     var rows = document.querySelectorAll('#fahrtenoffen tr:not(.hidden):not(:first-child)');
@@ -107,29 +107,27 @@ function displayInline(cell,url){
 
 
     rows.forEach(
-            function (currentValue, currentIndex, listObj) {
-                var rideCell = currentValue.querySelectorAll("td")[1]
-                var rideInfo = rideCell.textContent.split("\n").map((s) => s.trim().replace(/\t/g,'').replace(" -",''));
+        function (currentValue, currentIndex, listObj) {
+            var rideCell = currentValue.querySelectorAll("td")[1]
+            var rideInfo = rideCell.textContent.split("\n").map((s) => s.trim().replace(/\t/g, '').replace(" -", ''));
 
-                var carClass = rideInfo[indexCar].split(" ")[1]
-                var start = rideInfo[indexStart].split(" ")
-                var end = rideInfo[indexEnd].split(" ")
-                var distance = rideInfo[indexDistance].replace("km","")
+            var carClass = rideInfo[indexCar].split(" ")[1]
+            var start = rideInfo[indexStart].split(" ")
+            var end = rideInfo[indexEnd].split(" ")
+            var distance = rideInfo[indexDistance].replace("km", "")
 
-                var url = "https://www.cambio-carsharing.de/cms/buchen?"
-                url += "&kostenberechner=true"
-                url += "&kmgeschaetzt=" + distance
-                url += "&WagenID=" + wagenIds[carClass]
-                url += "&DatumVon=" + start[0]
-                url += "&ZeitVon=" + start[1]
-                url += "&DatumBis=" + end[0]
-                url += "&ZeitBis=" + end[1]
+            var url = "https://www.cambio-carsharing.de/cms/buchen?"
+            url += "&kostenberechner=true"
+            url += "&kmgeschaetzt=" + distance
+            url += "&WagenID=" + wagenIds[carClass]
+            url += "&DatumVon=" + start[0]
+            url += "&ZeitVon=" + start[1]
+            url += "&DatumBis=" + end[0]
+            url += "&ZeitBis=" + end[1]
 
-                // displayPopup(rideCell,url)
-                displayInline(rideCell,url)
-            }
-
-
-            )
+            // displayPopup(rideCell,url)
+            displayInline(rideCell, url)
+        }
+    )
 
 })();
