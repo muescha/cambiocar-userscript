@@ -103,15 +103,14 @@ function displayInline(cell, url) {
     var indexEnd = 4
     var indexDistance = 5
 
-    console.log(wagenIds);
-
+    const regCarClass = /(.) \d+/
 
     rows.forEach(
         function (currentValue, currentIndex, listObj) {
             var rideCell = currentValue.querySelectorAll("td")[1]
             var rideInfo = rideCell.textContent.split("\n").map((s) => s.trim().replace(/\t/g, '').replace(" -", ''));
-
-            var carClass = rideInfo[indexCar].split(" ")[1]
+            
+            var carClass = rideInfo[indexCar].match(regCarClass)[1]
             var start = rideInfo[indexStart].split(" ")
             var end = rideInfo[indexEnd].split(" ")
             var distance = rideInfo[indexDistance].replace("km", "")
